@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+	<meta charset="UTF-8">
+	<title>Danh sách sản phẩm</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+	<style>
+		body {
+			background-color: #fff;
+			color: #000;
+			font-family: 'Open Sans', sans-serif;
+		}
+		h1 {
+			font-family: 'Montserrat', sans-serif;
+			font-weight: bold;
+			font-size: 48px;
+			text-align: center;
+			margin-top: 50px;
+			margin-bottom: 50px;
+		}
+		a.song{
+			color: #d4af37;
+			font-weight: bold;
+			font-size: 18px;
+			text-decoration: none;
+		}
+		table {
+			color: #000;
+			background-color: #fff;
+			border-collapse: collapse;
+			border: 2px solid #000;
+			width: 100%;
+			margin: 0 auto;
+		}
+		table th, table td {
+			padding: 10px;
+			border: none;
+			vertical-align: middle;
+			text-align: center;
+			border: 1px solid #000;
+		}
+		table th {
+			font-size: 18px;
+			font-weight: bold;
+			text-transform: uppercase;
+			border-bottom: 2px solid #d4af37;
+			background-color: #d4af37;
+			color: #000;
+		}
+		table td {
+			font-size: 16px;
+			border-bottom: 1px solid #444;
+		}
+		table td img {
+			max-width: 100px;
+			max-height: 100px;
+			object-fit: cover;
+		}
+		a.edit, a.delete {
+			display: inline-block;
+			padding: 5px 10px;
+			background-color: #d4af37;
+			color: #000;
+			text-decoration: none;
+			font-weight: bold;
+			border-radius: 5px;
+			margin-right: 5px;
+		}
+		a.edit:hover, a.delete:hover {
+			background-color: #b38f2d;
+			color: #fff;
+		}
+	</style>
+</head>
+<body>
+<header th:insert="layouts/fragment.html :: header"></header>
+<div class="container-fluid">
+	<h1 class="text-center mb-4">Danh sách sản phẩm</h1>
+	<div sec:authorize="hasAnyAuthority('CREATER','ADMIN')">
+		<a href="books/new" class="song">Tạo sản phẩm mới</a><br/><br/>
+	</div>
+	<a href="categories" class="song">Danh mục</a><br/><br/>
+	<table>
+		<thead>
+		<tr>
+			<th class="song">Mã sản phẩm</th>
+			<th class="title">Tên sản phẩm</th>
+			<th class="description">Mô tả</th>
+			<th class="price">Giá</th>
+			<th class="category">Danh mục</th>
+			<th class="image">Hình ảnh</th>
+			<th class="action">Thao tác</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr th:each="book: ${books}">
+			<td th:text="${book.id}" class="song"></td>
+			<td th:text="${book.title}" class="title"></td>
+			<td th:text="${book.author}" class="description"></td>
+			<td th:text="${book.price}" class="price"></td>
+			<td th:text="${book.category.name}" class="category"></td>
+
+			<td><img
+					th:src="@{'/photos/' + ${book.id} + '/' + ${book.photourl}}"
+					style="width: 100px; height: 100px;" /></td>
+
+			<td>
+				<div sec:authorize="hasAnyAuthority('EDITOR','ADMIN')">
+					<a th:href="@{'/books/edit/'+${book.id}}" class="edit">Chỉnh sửa</a></div>
+				<div sec:authorize="hasAnyAuthority('ADMIN')">
+					<a th:href="@{'/books/delete/'+${book.id}}" class="delete">Xóa</a></div></td>
+		</tr>
+		</tbody>
+	</table>
+</div>
+</body>
+</html>
